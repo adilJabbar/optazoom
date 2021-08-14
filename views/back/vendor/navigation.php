@@ -124,6 +124,30 @@ $digital_check = $this->crud_model->get_type_name_by_id('general_settings','69',
                             ?>
                             </ul>
                         </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
+
+
+
+
+
+
             			<?php
 								}
 							}
@@ -198,6 +222,17 @@ $digital_check = $this->crud_model->get_type_name_by_id('general_settings','69',
 							if($this->crud_model->vendor_permission('sale')){
 						?>
                         <!--Menu list item-->
+
+                          <li <?php if($page_name=="sales"){?> class="active-link" <?php } ?>>
+                            <a href="<?php echo base_url(); ?>vendor/deals">
+                                <i class="fa fa-tag fa-lg"></i>
+                                    <span class="menu-title">
+                                        <?php echo 'Deals';?>
+                                    </span>
+                            </a>
+                        </li>
+
+
                         <li <?php if($page_name=="sales"){?> class="active-link" <?php } ?>>
                             <a href="<?php echo base_url(); ?>vendor/sales/">
                                 <i class="fa fa-usd"></i>

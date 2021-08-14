@@ -19,7 +19,7 @@
                     <a href="#" class="search_cat" data-cat="0"
                         data-min="<?php echo floor($this->crud_model->get_range_lvl('product_id !=', '0', "min")); ?>" 
                            data-max="<?php echo ceil($this->crud_model->get_range_lvl('product_id !=', '0', "max")); ?>" >
-                        <?php echo translate('all_products');?>
+                        <?php echo translate('all_products');?>aaaaaaaaaa
                     </a>
                 </li>                                                 
                 <?php

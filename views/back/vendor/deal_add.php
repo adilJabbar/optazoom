@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
 		<?php
-            echo form_open(base_url() . 'vendor/deal/do_add/', array(
+            echo form_open(base_url() . 'vendor/product/do_add/', array(
                 'class' => 'form-horizontal',
                 'method' => 'post',
                 'id' => 'product_add',
@@ -9,7 +9,21 @@
             ));
         ?>
             <!--Panel heading-->
-      
+            <div class="panel-heading">
+                <div class="panel-control" style="float: left;">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="#product_details"><?php echo translate('product_details'); ?></a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#business_details"><?php echo translate('business_details'); ?></a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#customer_choice_options"><?php echo translate('customer_choice_options'); ?></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <div class="panel-body">
                 <div class="tab-base">
                     <!--Tabs Content-->                    
@@ -17,22 +31,110 @@
                     	<div id="product_details" class="tab-pane fade active in">
         
                             <div class="form-group btm_border">
-                                <h4 class="text-thin text-center">Deals Add</h4>                            
+                                <h4 class="text-thin text-center"><?php echo translate('product_details'); ?></h4>                            
                             </div>
 
-                            <div class="form-group btm_border">
-                                <label class="col-sm-4 control-label" for="demo-hor-1"><?php echo translate('product_title');?></label>
+
+                             <div class="form-group btm_border">
+                                <label class="col-sm-4 control-label" for="demo-hor-9">Select Deal Type</label>
+                              
                                 <div class="col-sm-6">
-                                    <input type="text" name="title" id="demo-hor-1" placeholder="<?php echo translate('product_title');?>" class="form-control required">
+                                    <select class="demo-chosen-select" name="deal_type">
+                                        <option value="general_type">General Deal</option>
+                                        <option value="today_deal">Today Deal</option>
+                                    </select>
+                                </div>
+                                <span class="btn unit_set"></span>
+                            </div>
+
+
+
+                            <div class="form-group btm_border">
+                                <label class="col-sm-4 control-label" for="demo-hor-1">Deal Title</label>
+                                <div class="col-sm-6">
+                                    <input type="text" name="title" id="demo-hor-1" placeholder="" class="form-control required">
                                 </div>
                             </div>
+
+
+                               <div class="form-group btm_border">
+                                <label class="col-sm-4 control-label" for="demo-hor-9">Status</label>
+                              
+                                <div class="col-sm-6">
+                                    <select class="demo-chosen-select" name="deal_type">
+                                        <option value="active">Active</option>
+                                        <option value="inactive">In Active</option>
+                                    </select>
+                                </div>
+                                <span class="btn unit_set"></span>
+                            </div>
+
                             
-                            <div class="form-group btm_border">
-                                <label class="col-sm-4 control-label" for="demo-hor-2"><?php echo translate('category');?></label>
-                                <div class="col-sm-6">
-                                    <?php echo $this->crud_model->select_html('category','category','category_name','add','demo-chosen-select required','','digital',NULL,'get_cat'); ?>
+                            <div class="form-group btm_border add_product_div cloned-row field_wrapper" id="phone_content" >
+                                <div class="col-sm-4 cat_div" >
+                                      <label class="col-sm-2 control-label" for="demo-hor-2">Select Product Category</label> 
+                                       <select class="demo-chosen-select" id="categories" name="category_id[]">
+                                            <option value="">Select Category</option>
+                                               <?php foreach($categories as $cat_k => $cat_v): ?>
+                                            <option value="<?php echo isset($cat_v['category_id'])?$cat_v['category_id']:''; ?>"><?php echo $cat_v['category_name']; ?></option>
+                                        <?php endforeach ?>
+                                        </select>
+                                </div>
+                                 <div class="col-sm-4 sub_cat_div">
+                                      <label class="col-sm-2 control-label" for="demo-hor-2">Select Sub Category</label>
+                                      <select class="demo-chosen-select" id="sub_categories" name="sub_category_id[]">
+                                    </select>
+                                </div>
+                                 <div class="col-sm-4 product_div">
+                                      <label class="col-sm-2 control-label" for="demo-hor-2">Search Product Name</label>
+                                      <select class="demo-chosen-select" id="products" name="product_id[]">
+                                        
+                                    </select>
+                                </div>
+
+                                 <div class="col-sm-12">
+                                 <button class="add_product_button" id="add_product_button">Add Product</button>
                                 </div>
                             </div>
+                         <script type="text/javascript">
+                            $(document).ready(function(){
+    var maxField = 10; //Input fields increment limitation
+    var addButton = $('.add_product_button'); //Add button selector
+    var wrapper = $('.field_wrapper'); //Input field wrapper
+        var x = 1; //Initial field counter is 1
+    var fieldHTML = '<div class="col-sm-4 sub_cat_div"><label class="col-sm-2 control-label" for="demo-hor-2">Select Sub Category</label><select class="demo-chosen-select" id="categories'+x+'" name="category_id[]"></select></div> <div class="col-sm-4 sub_cat_div"><label class="col-sm-2 control-label" for="demo-hor-2">Select Sub Category</label><select class="demo-chosen-select" id="sub_categories'+x+'" name="sub_category_id[]"></select></div> <div class="col-sm-4 product_div"><label class="col-sm-2 control-label" for="demo-hor-2">Search Product Name</label><select class="demo-chosen-select" id="products'+x+'" name="product_id[]"></select></div>'; //New input field html 
+
+    
+    //Once add button is clicked
+    $(addButton).click(function(){
+        //Check maximum number of input fields
+        if(x < maxField){ 
+            x++; //Increment field counter
+            $(wrapper).append(fieldHTML); //Add field html
+            
+        }
+    });
+    
+    //Once remove button is clicked
+    $(wrapper).on('click', '.remove_button', function(e){
+        e.preventDefault();
+        $(this).parent('div').remove(); //Remove field html
+        x--; //Decrement field counter
+    });
+});
+
+
+
+
+
+                            var count=0;
+        
+                            $(document).on("click", ".add_product_button", function () { 
+                                $('#phone_content').append()
+                             })
+
+
+                         </script>
                             
                             <div class="form-group btm_border" id="sub" style="display:none;">
                                 <label class="col-sm-4 control-label" for="demo-hor-3"><?php echo translate('sub-category');?></label>
@@ -248,6 +350,63 @@
 <input type="hidden" id="option_count" value="-1">
 
 <script>
+
+
+
+$('#categories').change(function(){
+    $.ajax({
+        url: "<?php echo base_url(); ?>vendor/deals/get_sub_cat",
+        data: { "value": $("#categories").val() },
+        dataType:"html",
+        type: "post",
+        success: function(data){
+            $('#sub_categories')
+    .empty()
+    .append('<option value="">Select Sub Category</option>');
+            $('#sub_categories').trigger("chosen:updated");
+            var sub_cat = jQuery.parseJSON(data);
+            $.each(sub_cat.sub_categories, function (i, v) {
+            $('#sub_categories').append($('<option>', { 
+                value: v.sub_category_id,
+                text : v.sub_category_name 
+                })).trigger("chosen:updated");
+            });
+        }
+    });
+});
+
+
+
+
+$('#sub_categories').change(function(){
+    $.ajax({
+        url: "<?php echo base_url(); ?>vendor/deals/get_product_sub_cat",
+        data: { "value": $("#sub_categories").val() },
+        dataType:"html",
+        type: "post",
+        success: function(data){
+            $('#products')
+    .empty()
+    .append('<option value="">Select Sub Category</option>');
+            $('#products').trigger("chosen:updated");
+            var product = jQuery.parseJSON(data);
+            $.each(product.products, function (i, v) {
+            $('#products').append($('<option>', { 
+                value: v.product_id,
+                text : v.title 
+                })).trigger("chosen:updated");
+            });
+        }
+    });
+});
+
+
+
+
+
+
+
+
     window.preview = function (input) {
         if (input.files && input.files[0]) {
             $("#previewImg").html('');

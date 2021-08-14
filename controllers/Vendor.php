@@ -470,13 +470,18 @@ class Vendor extends CI_Controller
     /* Product add, edit, view, delete, stock increase, decrease, discount */
     function product($para1 = '', $para2 = '', $para3 = '')
     {
+
+
         if (!$this->crud_model->vendor_permission('product')) {
             redirect(base_url() . 'vendor');
         }
         if ($this->crud_model->get_type_name_by_id('general_settings','68','value') !== 'ok') {
             redirect(base_url() . 'admin');
         }
+
+
         if ($para1 == 'do_add') {
+
             $options = array();
             if ($_FILES["images"]['name'][0] == '') {
                 $num_of_imgs = 0;
@@ -636,6 +641,7 @@ class Vendor extends CI_Controller
             $page_data['all_product'] = $this->db->get('product')->result_array();
             $this->load->view('back/vendor/product_list', $page_data);
         } elseif ($para1 == 'list_data') {
+
             $limit      = $this->input->get('limit');
             $search     = $this->input->get('search');
             $order      = $this->input->get('order');
@@ -820,10 +826,126 @@ class Vendor extends CI_Controller
             $this->db->where('added_by',json_encode(array('type'=>'vendor','id'=>$this->session->userdata('vendor_id'))));
             $page_data['all_product'] = $this->db->get('product')->result_array();
             // var_dump($page_data);
+
             $this->load->view('back/index', $page_data);
         }
     }
 
+
+public function deals($para1 = '', $para2 = '', $para3 = '')
+{   
+
+     if (!$this->crud_model->vendor_permission('product')) {
+            redirect(base_url() . 'vendor');
+        }
+        if ($this->crud_model->get_type_name_by_id('general_settings','68','value') !== 'ok') {
+            redirect(base_url() . 'admin');
+        }
+
+
+
+
+    if($para1 == 'do_add')
+    {
+
+    } elseif ($para1 == 'list') {
+        // die('aaa');
+    $this->db->order_by('deals.id', 'desc');
+    $this->db->join('deal_products','deals.id=deal_products.deal_id','left');
+    $this->db->where('vendor_id',$this->session->userdata('vendor_id'));
+    $page_data['all_deals'] = $this->db->get('deals')->result_array();
+            $this->load->view('back/vendor/deals_list', $page_data);
+
+
+
+
+            //  $this->db->order_by('product_id', 'desc');
+            // $this->db->where('added_by',json_encode(array('type'=>'vendor','id'=>$this->session->userdata('vendor_id'))));
+            // $this->db->where('download=',NULL);
+            // $page_data['all_product'] = $this->db->get('product')->result_array();
+            // $this->load->view('back/vendor/product_list', $page_data);
+
+
+
+        }
+    elseif ($para1 == 'list_data') {
+        $draw = intval($this->input->get("draw"));
+        $start = intval($this->input->get("start"));
+        $length = intval($this->input->get("length"));
+
+
+            $this->db->order_by('deals.id', 'desc');
+            $this->db->join('deal_products','deals.id=deal_products.deal_id','left');
+            $this->db->where('deals.vendor_id',$this->session->userdata('vendor_id'));
+            $query = $this->db->get('deals');
+            $deals = $query->result_array();
+
+
+
+        $data = [];
+        if(!empty($deals))
+        {
+            foreach($deals->result_array() as $r) {
+         
+            $data[] = array(
+                $r->id,
+                $r->deal_type,
+                $r->title,
+                $r->status,
+                
+           );
+        }
+
+    }
+     
+      $result = array(
+               "draw" => $draw,
+                 "recordsTotal" => $query->num_rows(),
+                 "recordsFiltered" => $query->num_rows(),
+                 "data" => $data
+            );
+
+
+    echo json_encode($result);
+      exit();
+
+        }
+        elseif ($para1 == 'add') { 
+            
+            $page_data['categories'] =  $this->db->where('digital',null)->or_where('digital','')->get('category')->result_array();
+            $this->load->view('back/vendor/deal_add',$page_data);
+            
+        }elseif ($para1 == 'get_sub_cat') {
+
+           $cat_id = $_POST['value'];
+           $this->db->where('category',$cat_id);
+           $page_data['sub_categories'] = $this->db->get('sub_category')->result_array();
+           echo json_encode($page_data);
+           exit;
+        }elseif ($para1 == 'get_product_sub_cat') {
+            $sub_cat_id = $_POST['value'];
+            $this->db->order_by('product_id', 'desc');
+            $this->db->where('added_by',json_encode(array('type'=>'vendor','id'=>$this->session->userdata('vendor_id'))));
+            $this->db->where('sub_category',$sub_cat_id);
+            $page_data['products'] = $this->db->get('product')->result_array();
+            echo json_encode($page_data);
+            exit;
+
+        }
+        else {
+
+            $page_data['page_name']   = "Deals";
+
+            $this->db->order_by('deals.id', 'desc');
+            $this->db->join('deal_products','deals.id=deal_products.deal_id','left');
+            $this->db->where('vendor_id',$this->session->userdata('vendor_id'));
+            $page_data['all_deals'] = $this->db->get('deals')->result_array();
+
+            $this->load->view('back/index', $page_data);
+        }
+ 
+
+}
     public function product_bulk_upload()
     {
         if (!$this->crud_model->vendor_permission('product')) {
